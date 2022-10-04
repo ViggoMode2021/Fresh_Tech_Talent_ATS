@@ -64,7 +64,7 @@ def lambda_handler(event, context):
         
         else:
             education = 'Null'
-            adequate_job_education = 'This person does not have adequate education.'
+            inadequate_job_education = 'This person does not have adequate education.'
             
         match_3 = re.search(r'(?:[A-Z][a-z.-]+[ ]?)+', resume_info_extraction_string)
         city = match_3.group(0)
@@ -77,13 +77,10 @@ def lambda_handler(event, context):
 
         if 'Python' in resume_info_extraction_string:
             python_experience = 'Skill - Python'
-            adequate_python_experience = 'This person has adequate Python experience.'
-            
         else:
-            adequate_python_experience = 'This person does not have adequate Python experience.'
             python_experience = 'Null'
             
-        if adequate_job_education and adequate_python_experience:
+        if 'Python' in resume_info_extraction_string and 'Coding bootcamp' or 'Coding Bootcamp' in resume_info_extraction_string:
             email_message = 'Congratulations, you are chosen to move to the second round!'
         else:
             email_message = 'Sorry, but you do not have either adequate experience nor adequate education'
@@ -138,3 +135,4 @@ def lambda_handler(event, context):
         )
 
     return {"statusCode": 200, "body": json.dumps("Thank you for submitting your resume1!")}
+   
