@@ -3,7 +3,7 @@
 ========================
 AWS Lambda
 ========================
-Contributor: Chirag Rathod (Srce Cde)
+Contributor: Chirag Rathod (Srce Cde) and Ryan Viglione
 ========================
 """
 
