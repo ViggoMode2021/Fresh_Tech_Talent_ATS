@@ -1,9 +1,8 @@
 """
--*- coding: utf-8 -*-
 ========================
-AWS Lambda
+Fresh Tech Talent ATS
 ========================
-Contributor: Chirag Rathod (Srce Cde) and Ryan Viglione
+Contributors: Chirag Rathod (Srce Cde) and Ryan Viglione
 ========================
 """
 
@@ -28,8 +27,6 @@ def lambda_handler(event, context):
         bucketname = str(file_obj["s3"]["bucket"]["name"])
         filename = str(file_obj["s3"]["object"]["key"])
 
-        #print(f"Bucket: {bucketname} ::: Key: {filename}")
-
         response = textract.analyze_document(
             Document={
                 "S3Object": {
@@ -40,56 +37,56 @@ def lambda_handler(event, context):
             FeatureTypes=["FORMS", "TABLES"],
         )
 
-        #print(json.dumps(response))
-
-        raw_text = extract_text(response, extract_by="LINE")
-        word_map = map_word_id(response)
-        table = extract_table_info(response, word_map)
-        key_map = get_key_map(response, word_map)
-        value_map = get_value_map(response, word_map)
-        final_map = get_kv_map(key_map, value_map)
-
-        #print(json.dumps(table))
-        #print(json.dumps(final_map))
-        #print(raw_text)
-        first_item = raw_text[0]
-        print(first_item)
+        resume_info_extraction = extract_text(response, extract_by="LINE")
         
-        line = str(raw_text)
-        match = re.search(r'[\w.+-]+@[\w-]+\.[\w.-]+', line)
+        name = resume_info_extraction[0]
+        print(name)
+        
+        resume_info_extraction_string = str(resume_info_extraction)
+        match = re.search(r'[\w.+-]+@[\w-]+\.[\w.-]+', resume_info_extraction_string)
         email = match.group(0)
-        print(email)
-        
-        match_2 = re.search(r'\b\d{5}(?:-\d{4})?\b', line)
+
+        match_2 = re.search(r'\b\d{5}(?:-\d{4})?\b', resume_info_extraction_string)
         
         now = datetime.now()
         
         dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
         
-        print(dt_string)
-        
         if not match_2:
-            print('Zip Code is null')
+            zip_code = 'Null'
             
         elif match_2:
             zip_code = match_2.group(0)
-            print(zip_code)
-        
-        if 'Coding bootcamp' in line:
+
+        if 'Coding bootcamp' or 'Coding Bootcamp' in resume_info_extraction_string:
             education = 'Education - Bootcamp'
+            adequate_job_education = 'This person has adequate education.'
         
         else:
-            education = 'No bootcamp education'
+            education = 'Null'
+            adequate_job_education = 'This person does not have adequate education.'
             
-        match_3 = re.search(r'(?:[A-Z][a-z.-]+[ ]?)+', line)
+        match_3 = re.search(r'(?:[A-Z][a-z.-]+[ ]?)+', resume_info_extraction_string)
         city = match_3.group(0)
-        print(city)
         
-        if 'Python' in line:
+        if city in resume_info_extraction_string:
+            city = city
+        
+        else:
+            city = 'Null'
+
+        if 'Python' in resume_info_extraction_string:
             python_experience = 'Skill - Python'
+            adequate_python_experience = 'This person has adequate Python experience.'
             
         else:
-            python_experience = 'No python experience'
+            adequate_python_experience = 'This person does not have adequate Python experience.'
+            python_experience = 'Null'
+            
+        if adequate_job_education and adequate_python_experience:
+            email_message = 'Congratulations, you are chosen to move to the second round!'
+        else:
+            email_message = 'Sorry, but you do not have either adequate experience nor adequate education'
             
         client = boto3.resource('dynamodb')
 
@@ -101,9 +98,11 @@ def lambda_handler(event, context):
     
                'id': dt_string,
     
-               'name': first_item,
+               'name': name,
                
                'email': email,
+               
+               'city': city,
     
                'zip_code': zip_code,
     
@@ -113,5 +112,29 @@ def lambda_handler(event, context):
            }
     
        )
+       
+        client = boto3.client('ses')
+            
+        response = client.send_email(
+            Source='bburnerson840@gmail.com',
+            Destination={
+                'ToAddresses': [
+                    'ryansviglione@gmail.com',
+                ]
+            },
+            Message={
+                'Subject': {
+                    'Data': 'Your job application status'
+                },
+                'Body': {
+                    'Text': {
+                        'Data': email_message
+                    },
+                    'Html': {
+                        'Data': email_message
+                    }
+                }
+            }
+        )
 
-    return {"statusCode": 200, "body": json.dumps("Thanks from Srce Cde!")}
+    return {"statusCode": 200, "body": json.dumps("Thank you for submitting your resume1!")}
