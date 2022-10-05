@@ -1,0 +1,168 @@
+  @import url(https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css);
+
+@import url(//db.onlinewebfonts.com/c/b67dd0e7123c050baf059b5ce8ebc665?family=BrandonTextW01-Bold);
+
+@font-face {font-family: "Brandon Text";
+    src: url("//db.onlinewebfonts.com/t/b67dd0e7123c050baf059b5ce8ebc665.eot");
+    src: url("//db.onlinewebfonts.com/t/b67dd0e7123c050baf059b5ce8ebc665.eot?#iefix") format("embedded-opentype"),
+    url("//db.onlinewebfonts.com/t/b67dd0e7123c050baf059b5ce8ebc665.woff2") format("woff2"),
+    url("//db.onlinewebfonts.com/t/b67dd0e7123c050baf059b5ce8ebc665.woff") format("woff"),
+    url("//db.onlinewebfonts.com/t/b67dd0e7123c050baf059b5ce8ebc665.ttf") format("truetype"),
+    url("//db.onlinewebfonts.com/t/b67dd0e7123c050baf059b5ce8ebc665.svg#BrandonTextW01-Bold") format("svg");
+}
+
+body, html{
+  margin: 30px 20px 40px 20px;
+}
+
+h1, h2, h4, h5, h6 {
+  font-family: 'Brandon Text';
+}
+
+h1 {
+  font-size: 35px;
+}
+
+h4 {
+  font-size: 17px;
+}
+
+h3 {
+  font-size: 22px;
+  font-weight: 300;
+}
+
+p, a, li, ul, h3 {
+  font-family: 'Avenir', sans-serif;
+}
+
+.btn {
+  font-family: 'Brandon Text';
+  background-color: #ffffff00;
+  border-width: 1px;
+  display: inline-block;
+  padding: 8px 20px;
+  margin: 0;
+  width: auto;
+  line-height: 1.42;
+  font-weight: bold;
+  text-align: center;
+   text-decoration: none;
+  vertical-align: middle;
+  white-space: normal;
+  cursor: pointer;
+  border: 2px solid #000000;
+  min-width: 125px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  border-radius: 2px;
+  box-shadow: inset 0 0 0 0 black;
+  transition: .75s;
+}
+
+.btn:hover {
+      color: #fff;
+      box-shadow: inset 960px 0 0 0 black;
+    }
+
+a {
+  color: #1c1d1d;
+}
+
+a:hover {
+  color: #5e5e5e;
+  text-decoration: none;
+}
+
+.modal-checkbox {
+  display: none;
+}
+
+.modal-overlay {
+  position: fixed;
+  display: none;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  border-radius: 0px;
+  left: 0;
+  background-color: rgba(0, 0, 0, .5);
+}
+
+.modal-content {
+  position: fixed;
+  display: none;
+  top: 0;
+  left: 0;
+  border-radius: 0;
+  box-shadow: none;
+  height: 100%;
+  width: 100%;
+  background-color: #fff;
+  padding: 5em 5em 5em 5em;
+  overflow-x: scroll;
+}
+
+.modal-close {
+  position: absolute;
+  top: 0.25em;
+  right: .5em;
+  font-size: 2em;
+  line-height: 1;
+  font-weight: 300;
+  color: #666;
+  cursor: pointer;
+}
+
+.modal-title {
+  font-weight: 700;
+  margin: 0 0 .75em 0;
+}
+
+.modal-checkbox:checked ~ .modal-overlay,
+.modal-checkbox:checked ~ .modal-content {
+  display: block;
+  z-index: 1000;
+}
+
+@media (min-width: 600px) {
+  .modal-content {
+    max-width: 600px;
+    top: 10%;
+    right: 0;
+    margin: 0 auto;
+    height: auto;
+    width: auto;
+    max-height: 80%;
+  }
+}
+
+label {
+  cursor: pointer;
+}
+
+[data-tooltip][tabindex="0"] {
+  display: inline-block;
+  position: relative;
+  color: #1c1d1d;
+  cursor: text;
+}
+[data-tooltip][tabindex="0"]::after {
+  display: none;
+  position: absolute;
+  bottom: 110%;
+  left: 50%;
+  padding: 2px 6px;
+  transform: translate(-50%, 100%);
+  border: 1px solid #fff;
+  border-radius: 2px;
+  white-space: pre-line;
+  color: #1c1d1d;
+  white-space: nowrap;
+  background-color: #fff;
+  pointer-events: none;
+  content: attr(data-tooltip);
+}
+[data-tooltip][tabindex="0"]:focus::after, [data-tooltip][tabindex="0"]:focus::before, [data-tooltip][tabindex="0"]:hover::after, [data-tooltip][tabindex="0"]:hover::before {
+  display: block;
+}
