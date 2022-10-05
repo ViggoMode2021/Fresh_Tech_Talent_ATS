@@ -1,0 +1,64 @@
+<head>
+  <title>Fresh Tech Talent ATS</title>
+  <center>
+  <img src="/static/images/FTTats.jpg" width="350" height="400">
+    </center>
+</head>
+<center>
+  <a href="https://phto.co" target="_blank"><img width="60" src="https://cdn.shopify.com/s/files/1/1473/7104/t/3/assets/logo.png?8623046329045085914"></a>
+</center><br>
+<center>
+  <h1 style="padding-bottom: 15px;">Fresh Tech Talent ATS Open Positions</h1></center>
+<center><h4 style="font-family: 'Avenir', sans-serif; font-weight: 300;"></h4></center>
+  <br>
+<br>
+<h3 style="padding-bottom: 15px;">Current software development openings</h3>
+<hr>
+<div class="row">
+  <div><label class="col-md-6 col-sm-6 col-xs-12" for="custsuppspec"><h4>Python Developer</h4></label>
+    <h4 style="font-family: 'Avenir'; line-height: 24px; font-weight: 300; font-size: 14px;" class="col-md-4 col-sm-4 col-xs-6" style="align: left;"><span data-tooltip="Whenever we need ya!" tabindex="0">Full-time</span></h4>
+    <h4 style="font-family: 'Avenir'; line-height: 24px; font-weight: 300; font-size: 14px;" class="col-md-2 col-sm-2 col-xs-6"><span data-tooltip="Yes, anywhere" tabindex="0">Remote</span></h4></div>
+
+  {% with messages = get_flashed_messages()  %}
+    {% if messages %}
+    {% for message in messages %}
+    <div id="confirmation-box" class="alert alert-success alert-dismissible fade show" role="alert">
+      {{ message }}
+      <button type="button" onclick="document.getElementById('confirmation-box').style.display = 'none'" class="close" data-dismiss="alert" aria-label="Close">
+      </button>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+<div class="col-md-12 col-sm-12 col-xs-12">
+  <div style="height: auto; background: #fcda5a; color: #1c1d1d; margin-bottom: 20px;">
+    <h4 style="font-size: 16px; font-weight: 500; font-family: 'Avenir'; line-height: 40px; text-align: center; padding: 30px 20px 20px 20px;"></h4>
+  </div>
+</div>
+
+<div class="modal-container">
+  <label for="custsuppspec" class="modal-overlay"></label>
+  <div class="modal-content">
+    <h3 class="modal-title">Entry-Level Python Developer ($110,000 + benefits)</h3>
+    <h4>Description:</h4>
+    <p>We are looking for an experienced Python developer to join our engineering team and help us create dynamic software applications for our clients. In this role, you will be responsible for writing and testing scalable code, developing back-end components, and integrating user-facing elements in collaboration with front-end developers.</p>
+    <h4>Responsibilities:</h4>
+    <ul>
+      <li>Coordinating with development teams to determine application requirements</li>
+      <li>Writing scalable code using Python programming language</li>
+      <li>Testing and debugging applications</li>
+    </ul>
+    <h4>Qualifications:</h4>
+    <ul>
+      <li>Coding bootcamp graduation required</li>
+      <li>Portfolio required</li>
+      <li>Must have no job experience with Python, as this position is 100% entry level</li>
+      <li>Ability to collaborate on projects and work independently when required</li>
+    </ul>
+    <hr>
+  <form action="/python_job_submit" method="POST" enctype="multipart/form-data">
+      <input type="file" name="file" value="file">
+    <button class="custom-btn btn-3" name="upload" id="upload"><span>Submit resume</span></button>
+</form>  </div>
+</div>
