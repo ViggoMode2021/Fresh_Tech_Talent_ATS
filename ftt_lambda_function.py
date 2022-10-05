@@ -50,7 +50,9 @@ def lambda_handler(event, context):
         
         now = datetime.now()
         
-        dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+        dt_email = now.strftime("%m/%d/%Y")
+        
+        dt_string = now.strftime("%m/%d/%Y %H:%M:%S")
         
         if not match_2:
             zip_code = 'Null'
@@ -75,15 +77,15 @@ def lambda_handler(event, context):
         else:
             city = 'Null'
 
-        if 'Python' in resume_info_extraction_string:
+        if 'Python' or 'python' in resume_info_extraction_string:
             python_experience = 'Skill - Python'
         else:
             python_experience = 'Null'
             
         if 'Python' in resume_info_extraction_string and 'Coding bootcamp' or 'Coding Bootcamp' in resume_info_extraction_string:
-            email_message = 'Congratulations, you are chosen to move to the second round!'
+            email_message = f'Congratulations, {name} you are chosen to interview for the Python Developer position! This is regarding your application on {dt_email}.'
         else:
-            email_message = 'Sorry, but you do not have either adequate experience nor adequate education'
+            email_message = f'Sorry, {name} but you do not have either adequate experience nor adequate education. This is regarding your application on {dt_email}.'
             
         client = boto3.resource('dynamodb')
 
@@ -116,7 +118,7 @@ def lambda_handler(event, context):
             Source='bburnerson840@gmail.com',
             Destination={
                 'ToAddresses': [
-                    'ryansviglione@gmail.com',
+                    email,
                 ]
             },
             Message={
@@ -134,5 +136,5 @@ def lambda_handler(event, context):
             }
         )
 
-    return {"statusCode": 200, "body": json.dumps("Thank you for submitting your resume1!")}
+    return {"statusCode": 200, "body": json.dumps("Thank you for submitting your resume!")}
    
