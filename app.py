@@ -1,9 +1,8 @@
-from flask import Flask, render_template, request, flash, session, redirect, url_for
+from flask import Flask, render_template, request, flash
 from werkzeug.utils import secure_filename
 import os
 import boto3
 from dotenv import load_dotenv, find_dotenv
-from botocore.exceptions import ClientError
 
 application = Flask(__name__)
 
@@ -21,6 +20,8 @@ s3 = boto3.client('s3', aws_access_key_id=os.getenv('AWS_ACCESS_KEY_ID'),
 
 BUCKET_NAME = 'textract-example-bucket-vig'
 
+BUCKET_NAME_TWO = 'textract-lambda-aws'
+
 @application.route('/')
 def sign_up():
     return render_template("sign_up.html")
@@ -37,6 +38,23 @@ def python_job_submit():
                     Filename=filename,
                     Key=filename
                 )
+            os.remove(filename)
+            flash('Thank you for submitting your resume!')
+            return render_template('sign_up.html')
+
+@application.route('/aws_job_submit', methods=['POST'])
+def aws_job_submit():
+    if request.method == 'POST':
+        resume = request.files['file']
+        if resume:
+            filename = secure_filename(resume.filename)
+            resume.save(filename)
+            s3.upload_file(
+                    Bucket=BUCKET_NAME_TWO,
+                    Filename=filename,
+                    Key=filename
+                )
+            os.remove(filename)
             flash('Thank you for submitting your resume!')
             return render_template('sign_up.html')
 
