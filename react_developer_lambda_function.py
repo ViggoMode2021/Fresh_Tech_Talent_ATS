@@ -1,24 +1,9 @@
-"""
-========================
-Fresh Tech Talent ATS
-========================
-Contributors: Chirag Rathod (Srce Cde) and Ryan Viglione
-========================
-"""
-
 from datetime import datetime
 import re
 import json
 import boto3
 from pprint import pprint
-from parser import (
-    extract_text,
-    map_word_id,
-    extract_table_info,
-    get_key_map,
-    get_value_map,
-    get_kv_map,
-)
+from parser import extract_text
 
 def lambda_handler(event, context):
     textract = boto3.client("textract", region_name = 'us-east-1')
@@ -40,8 +25,7 @@ def lambda_handler(event, context):
         resume_info_extraction = extract_text(response, extract_by="LINE")
         
         name = resume_info_extraction[0]
-        print(name)
-        
+
         resume_info_extraction_string = str(resume_info_extraction)
         match = re.search(r'[\w.+-]+@[\w-]+\.[\w.-]+', resume_info_extraction_string)
         email = match.group(0)
@@ -56,40 +40,42 @@ def lambda_handler(event, context):
         
         if not match_2:
             zip_code = 'Null'
-            
         elif match_2:
             zip_code = match_2.group(0)
+        
+        print(zip_code)
 
         if 'Coding bootcamp' or 'Coding Bootcamp' in resume_info_extraction_string:
             education = 'Education - Bootcamp'
             adequate_job_education = 'This person has adequate education.'
-        
         else:
             education = 'Null'
             inadequate_job_education = 'This person does not have adequate education.'
-            
-        match_3 = re.search(r'(?:[A-Z][a-z.-]+[ ]?)+', resume_info_extraction_string)
-        city = match_3.group(0)
-        
-        if city in resume_info_extraction_string:
-            city = city
-        
-        else:
-            city = 'Null'
 
-        if 'Python' or 'python' in resume_info_extraction_string:
-            python_experience = 'Skill - Python'
+        if 'ReactJS' or 'React' in resume_info_extraction_string:
+            React_experience = 'Skill - React'
+        elif 'React' in resume_info_extraction_string:
+            React_experience = 'Skill - React'
+        elif 'React.js' in resume_info_extraction_string:
+            React_experience = 'Skill - React'
         else:
-            python_experience = 'Null'
+            React_experience = 'Null'
+        
+        tampa_zip_codes = ['33601', '33601', '33626', '33629', '33631', '33633', '33635', '33637', '33646', '33647', '33650', 
+        '33655', '33660', '33664', '33672', '33675', '33677', '33679', '33682', '33684', '33689', '33694']
             
-        if 'Python' in resume_info_extraction_string and 'Coding bootcamp' or 'Coding Bootcamp' in resume_info_extraction_string:
-            email_message = f'Congratulations, {name} you are chosen to interview for the Python Developer position! This is regarding your application on {dt_email}.'
-        else:
-            email_message = f'Sorry, {name} but you do not have either adequate experience nor adequate education. This is regarding your application on {dt_email}.'
+        if 'ReactJS' in resume_info_extraction_string and 'Coding bootcamp' or 'Coding Bootcamp' in resume_info_extraction_string and zip_code in tampa_zip_codes:
+            email_message = f'Congratulations, {name} you are chosen to interview for the React Developer position! This is regarding your application on {dt_email}.'
+        elif 'React' in resume_info_extraction_string and 'Coding bootcamp' or 'Coding Bootcamp' in resume_info_extraction_string and zip_code in tampa_zip_codes:
+            email_message = f'Congratulations, {name} you are chosen to interview for the React Developer position! This is regarding your application on {dt_email}.'
+        if zip_code not in tampa_zip_codes:
+            email_message = f'Sorry, {name} but your location of {zip_code} is not in Tampa, Florida for the React Developer position. This is regarding your application on {dt_email}.'
+        elif React_experience == 'Null':
+            email_message = f'Sorry, {name} but you do not have either adequate experience nor adequate education for the React Developer position. This is regarding your application on {dt_email}.'
             
         client = boto3.resource('dynamodb')
 
-        table = client.Table('Job_Applicants')
+        table = client.Table('React_Job_Applicants')
     
         response = table.put_item(
     
@@ -101,20 +87,20 @@ def lambda_handler(event, context):
                
                'email': email,
                
-               'city': city,
-    
                'zip_code': zip_code,
     
                'education': education,
                
-               'python_experience': python_experience
+               'react_experience': React_experience
            }
     
        )
        
         client = boto3.client('ses')
+        
+        email_message_2 = f'Hello, somebody just applied to your ReactJS job posting. Here is their information: name: {name}, email: {email}, zip_code: {zip_code}, education: {education}, react_experience: {React_experience}'
             
-        response = client.send_email(
+        email = client.send_email(
             Source='bburnerson840@gmail.com',
             Destination={
                 'ToAddresses': [
@@ -135,6 +121,28 @@ def lambda_handler(event, context):
                 }
             }
         )
+        
+        email_2 = client.send_email(
+            Source='ryansviglione@gmail.com',
+            Destination={
+                'ToAddresses': [
+                    'bburnerson840@gmail.com',
+                ]
+            },
+            Message={
+                'Subject': {
+                    'Data': 'Somebody just applied to your ReactJS job!'
+                },
+                'Body': {
+                    'Text': {
+                        'Data': email_message_2
+                    },
+                    'Html': {
+                        'Data': email_message_2
+                    }
+                }
+            }
+        )
 
     return {"statusCode": 200, "body": json.dumps("Thank you for submitting your resume!")}
-  
+   
