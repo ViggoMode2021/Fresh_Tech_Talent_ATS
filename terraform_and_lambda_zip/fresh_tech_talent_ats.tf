@@ -3,7 +3,7 @@ provider "aws" {
 }
 
 resource "aws_s3_bucket" "freshtechtalentatsbucket" {
-  bucket = "freshtechtalentatsbucketunique" # Change this to a unique bucket name. 
+  bucket = "freshtechtalentatsbucketunique"
 
   tags = {
     Name        = "Bucket for Fresh Tech Talent ATS"
@@ -14,10 +14,19 @@ resource "aws_s3_bucket" "freshtechtalentatsbucket" {
 variable "iam_role" {
   description = "Value of the Name tag for the Lambda function"
   type        = string
-  default     = "arn:aws:iam::583715230104:role/service-role/textract-lambda-role-r2ws9akc" # Arn for custom IAM role that allows permissions for Lambda, Textract, Ses, DynamoDB
+  default     = "arn:aws:iam::583715230104:role/service-role/textract-lambda-role-r2ws9akc"
 }
 
+#data "aws_s3_object" "freshtechtalentatslambdacode" {
+#bucket = "freshtechtalentresources"
+#key    = "freshtechtalentlambda.zip"
+#}
+
 resource "aws_lambda_function" "fresh_tech_talent_lambda" {
+  # If the file is not in the current working directory you will need to include a
+  # path.module in the filename.
+  #s3_bucket     = data.aws_s3_object.freshtechtalentatslambdacode.bucket
+  #s3_key        = data.aws_s3_object.freshtechtalentatslambdacode.key
   filename      = "freshtechtalentlambda.zip"
   function_name = "freshtechtalentatslambda"
   role          = var.iam_role
@@ -41,4 +50,19 @@ resource "aws_lambda_permission" "allow_bucket" {
   function_name = aws_lambda_function.fresh_tech_talent_lambda.arn
   principal     = "s3.amazonaws.com"
   source_arn    = aws_s3_bucket.freshtechtalentatsbucket.arn
+}
+
+resource "aws_dynamodb_table" "example" {
+  name         = "Job_Applicants"
+  hash_key     = "id"
+  billing_mode = "PAY_PER_REQUEST"
+
+  attribute {
+    name = "id"
+    type = "S"
+  }
+}
+
+resource "aws_ses_email_identity" "example" {
+  email = "bburnerson840@gmail.com"
 }
