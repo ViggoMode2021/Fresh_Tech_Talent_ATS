@@ -59,4 +59,4 @@ def aws_job_submit():
             return render_template('sign_up.html')
 
 if __name__ == '__main__':
-    application.run(debug=True)
+    application.run(debug=False)
