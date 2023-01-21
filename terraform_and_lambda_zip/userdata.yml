@@ -1,0 +1,26 @@
+#cloud-config
+packages: 
+  - httpd
+  - python-pip python-dev nginx
+  - virtualenv
+  - git
+  - nginx
+write_files:
+        - path: /home/ec2-user/github.sh
+          permissions: 0744
+          owner: root
+          content: |
+            #!/usr/bin/env bash
+            set -e
+            git clone https://github.com/ViggoMode2021/Fresh_Tech_Talent_ATS.git
+            cd Fresh_Tech_Talent_ATS
+            gunicorn --bind 0.0.0.0:8080 wsgi 
+runcmd:
+  - sudo yum update
+  - yes | sudo yum install python-pip python-dev nginx
+  - sudo pip install virtualenv
+  - yes | sudo yum install git all
+  - sudo pip install boto3
+  - pip install gunicorn flask
+  - sudo pip install python-dotenv
+  - bash /home/ec2-user/github.sh
