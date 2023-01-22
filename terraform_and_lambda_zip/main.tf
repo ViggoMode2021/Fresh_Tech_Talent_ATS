@@ -34,9 +34,11 @@ resource "aws_instance" "amazon-linux-2-with-nginx-and-flask-application" {
   associate_public_ip_address = true
   user_data                   = data.template_file.user_data.rendered
 
-  #user_data = "${file("user-data-fresh-tech-talent-ats.sh")}""
-
   tags = {
     Name = "Amazon Linux 2 with Nginx server and Flask app running on port 8080"
   }
+}
+
+output "instance_ip_addr" {
+  value = join("", [aws_instance.amazon-linux-2-with-nginx-and-flask-application.public_ip, ":8080"])
 }
